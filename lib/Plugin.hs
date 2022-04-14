@@ -38,22 +38,18 @@ prettyTemplate template =
 
 viewTemplate :: String -> Maybe [TemplateItem]
 viewTemplate str =
-  case optimize (parse str) of
+  case parse str of
     [] -> Nothing
     [Str x] -> Nothing
     template -> Just template
   where
     parse :: String -> [TemplateItem]
-    parse ('\\' : '#' : '{' : str) = Str "\\#{" : parse str
-    parse ('#' : '{' : str) =
-      case break (== '}') str of
-        ("", _) -> error "wtf"
-        (var, '}' : str) -> Var var : parse str
-        _ -> error "wtf"
-    parse (c : str) = Str [c] : parse str
+    parse ('\\' : '#' : '{' : str) = Str "\\#{" +: parse str
+    parse ('#' : '{' : str) = case break (== '}') str of
+      (var@(_ : _), '}' : str) -> Var var : parse str
+      _ -> error "wtf"
+    parse (c : str) = Str [c] +: parse str
     parse [] = []
 
-    optimize :: [TemplateItem] -> [TemplateItem]
-    optimize (Str a : Str b : xs) = optimize (Str (a ++ b) : xs)
-    optimize (i : xs) = i : optimize xs
-    optimize [] = []
+    Str a +: (Str b : xs) = Str (a ++ b) : xs
+    i +: xs = i : xs
