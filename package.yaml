@@ -1,17 +1,15 @@
-name: hspg
+name: interpolation-plugin
 
 dependencies:
   - base
   - ghc
-  - ghc-paths
-  - template-haskell
   - uniplate
 
 executables:
-  hspg-exe:
+  interpolation-plugin-example:
     main: Main.hs
     dependencies:
-      - hspg
+      - interpolation-plugin
       - text
 
 library:
