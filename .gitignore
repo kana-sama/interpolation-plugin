@@ -1,3 +1,4 @@
 .vscode
 dist-newstyle
 *.cabal
+.DS_Store
